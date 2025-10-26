@@ -2,7 +2,7 @@ import { getOperatorFunction, formatResult, operation } from "./calculator.js";
 
 // UI utilities for display (moved here so controller is self-contained)
 export const displayUtils = {
-  // Ajusta el tamaño de fuente de un elemento según su overflow
+  // adjust font size of an element based on its overflow
   adjustFontSize(element, defaultSize) {
     const hasOverflow = element.scrollWidth > element.clientWidth;
     if (hasOverflow) {
@@ -14,14 +14,14 @@ export const displayUtils = {
     }
   },
 
-  // Actualiza el contenido de un display y ajusta su tamaño
+  // update display content and check overflow
   updateDisplay(dom, values, content, isSmallDisplay = false) {
     const display = isSmallDisplay ? dom.smallDisplay : dom.display;
     display.textContent = content;
     this.checkDisplayOverflow(dom, values);
   },
 
-  // Verifica y ajusta el overflow de ambos displays
+  // check and adjust both displays for overflow
   checkDisplayOverflow(dom, values) {
     this.adjustFontSize(dom.display, values.defaultDisplayFontSize);
     this.adjustFontSize(dom.smallDisplay, values.defaultSmallDisplayFontSize);
@@ -169,8 +169,6 @@ export function createCalculatorController() {
           displayUtils.checkDisplayOverflow(dom, values);
         }
       }
-
-      // use operatorUtils.doOperation (shared implementation)
     },
 
     handleDecimal(dom, values) {
