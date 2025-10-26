@@ -11,6 +11,7 @@
   --dark-text: #525252;
   --small-display: #999b88;
   --whit-btn: #f4f4f4;
+  --orange: #e28b3b;
   --yellow: #f5d327;
 }
 @font-face {
@@ -24,6 +25,7 @@ body {
   height: 100vh;
   margin: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: var(--yellow);
@@ -61,6 +63,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 120px; /* Altura mínima para móviles */
+  overflow:hidden;
 }
 
 .small-display {
@@ -72,6 +75,7 @@ body {
   font-size: 6rem;
   line-height: 80px;
 }
+
 .buttons {
   padding: 1rem 0 0 0;
   display: flex;
@@ -97,6 +101,15 @@ body {
   border: 2px solid var(--gray);
   background: var(--whit-btn);
   color: var(--dark-text);
+
+  box-shadow: var(--dark-brown) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.equal {
+  border: 2px solid var(--dark-gray);
+  background: var(--orange);
+  color: var(--white-text);
 
   box-shadow: var(--dark-brown) 0px 2px 4px,
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
@@ -133,11 +146,61 @@ button {
   transition: all 0.1s ease-in-out;
 }
 
-#equal, #num-0 {
+#equal,
+#num-0 {
   flex: 1;
 }
 
 
+/* Footer */
+.github-link {
+  display: inline-block;
+  transition: all 0.3s ease-out;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.github-link:hover,
+.github-link:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.github-link:hover .github-icon,
+.github-link:focus .github-icon {
+  filter: drop-shadow(0 0 0.5em #080808);
+  transform: rotate(360deg) scale(1.2);
+}
+
+.github-icon {
+  filter: drop-shadow(0.15em 0.15em 0.15em #000);
+  height: 2em;
+  width: 2em;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.github-path {
+  fill: var(--color-accent);
+  transition: fill 0.3s ease;
+}
+
+.github-link:hover .github-path {
+  fill: #ffffff;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+footer p {
+  font-family: monospace;
+  margin: 0;
+  font-size: 1.8em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
 
 /* Media Queries para Responsive */
 /* Tablets */
@@ -162,16 +225,22 @@ button {
     gap: 0.4rem;
   }
 
-  .bottom {
-    gap: 1rem;
-  }
+  /* .bottom {
+    gap: 0.9rem;
+  } */
 }
 
 /* Móviles */
 @media (max-width: 480px) {
+
   .container {
     padding: 10px;
     width: 95%;
+  }
+
+  .display-container{
+    min-height: 80px;
+    overflow: hidden;
   }
 
   .panel {
@@ -190,7 +259,7 @@ button {
 
   button {
     font-size: 2.8rem;
-    min-width: 70px;
+    min-width: 80px;
     padding: 6px 10px;
     border-radius: 8px;
   }
@@ -200,15 +269,15 @@ button {
     gap: 0.3rem;
   }
 
-  .bottom {
-    flex-direction: column;
-    gap: 0.5rem;
+  .bottom{
+    gap: 0.7rem;
   }
 
-  .bottom-left,
-  .bottom-right {
-    width: 100%;
+  .bottom-left {
+    gap: 0.3rem;
   }
+
+
 
   #num-0,
   #equal {
@@ -218,6 +287,11 @@ button {
 
 /* Móviles muy pequeños */
 @media (max-width: 360px) {
+
+  .display-container{
+    min-height: 80px;
+    overflow: hidden;
+  }
   .small-display {
     font-size: 2em;
     line-height: 30px;
