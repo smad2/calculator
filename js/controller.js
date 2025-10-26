@@ -27,14 +27,13 @@ export const displayUtils = {
     this.adjustFontSize(dom.smallDisplay, values.defaultSmallDisplayFontSize);
   },
 
-  // Actualiza el display principal con manejo de casos especiales
-  // lastResultParam: provide current lastResult from controller if needed
+  // Update main display
   updateMainDisplay(dom, values, content, lastResultParam) {
     if (content === lastResultParam || content === "Infinity") {
       content = values.defaultDisplay;
     }
     this.updateDisplay(dom, values, content);
-  }
+  },
 };
 
 // Factory: controlador que encapsula el estado de la calculadora
@@ -50,7 +49,10 @@ export function createCalculatorController() {
 
     doOperation(operator, num1, num2, values) {
       lastOperation = { num1, num2, operator };
-      currentOperator = this.findOperator(values, (op) => op.id === operator.name);
+      currentOperator = this.findOperator(
+        values,
+        (op) => op.id === operator.name
+      );
       lastResult = operation(operator, num1, num2);
       return lastResult;
     },
@@ -58,19 +60,23 @@ export function createCalculatorController() {
     // expose state read-only helper for debugging/tests
     getState() {
       return { currentOperator, lastOperation, lastResult };
-    }
+    },
   };
 
   const handlers = {
     handleRemove(dom, values, target) {
       if (target === dom.deleteBtn) {
-        if (dom.display.textContent === "Infinity" || +dom.display.textContent === lastResult) {
+        if (
+          dom.display.textContent === "Infinity" ||
+          +dom.display.textContent === lastResult
+        ) {
           displayUtils.updateDisplay(dom, values, values.defaultDisplay);
           return;
         }
-        const newContent = dom.display.textContent.length === 1 ?
-          values.defaultDisplay :
-          dom.display.textContent.slice(0, -1);
+        const newContent =
+          dom.display.textContent.length === 1
+            ? values.defaultDisplay
+            : dom.display.textContent.slice(0, -1);
         displayUtils.updateDisplay(dom, values, newContent);
       } else {
         displayUtils.updateDisplay(dom, values, values.defaultDisplay);
@@ -81,7 +87,7 @@ export function createCalculatorController() {
     },
 
     handleNumber(dom, values, target) {
-      const btnValue = values.btnNumberValues.find(n => n.id === target);
+      const btnValue = values.btnNumberValues.find((n) => n.id === target);
       if (!btnValue) return;
 
       if (+dom.display.textContent === lastResult) {
@@ -90,9 +96,10 @@ export function createCalculatorController() {
         return;
       }
 
-      const newContent = dom.display.textContent === values.defaultDisplay ?
-        btnValue.value :
-        dom.display.textContent + btnValue.value;
+      const newContent =
+        dom.display.textContent === values.defaultDisplay
+          ? btnValue.value
+          : dom.display.textContent + btnValue.value;
       displayUtils.updateDisplay(dom, values, newContent);
     },
 
@@ -102,11 +109,13 @@ export function createCalculatorController() {
         dom.display.textContent === values.defaultDisplay
       ) {
         //change operator
-        currentOperator = operatorUtils.findOperator(values, (op) => op.id === target);
-
-        dom.smallDisplay.textContent =
+        currentOperator = operatorUtils.findOperator(
+          values,
+          (op) => op.id === target
+        );
+        let newContent =
           dom.smallDisplay.textContent.slice(0, -1) + currentOperator.symbol;
-        displayUtils.checkDisplayOverflow(dom, values);
+        displayUtils.updateDisplay(dom, values, newContent, true);
 
         return;
       } else if (
@@ -117,25 +126,29 @@ export function createCalculatorController() {
         let num2 = +dom.display.textContent;
         let operator = getOperatorFunction(currentOperator.id);
         let result = operatorUtils.doOperation(operator, num1, num2, values);
-        currentOperator = operatorUtils.findOperator(values, (op) => op.id === target);
-
-        dom.smallDisplay.textContent += dom.display.textContent;
-        dom.display.textContent = formatResult(result);
-        displayUtils.checkDisplayOverflow(dom, values);
-
+        currentOperator = operatorUtils.findOperator(
+          values,
+          (op) => op.id === target
+        );
+        let newContent = dom.smallDisplay.textContent + dom.display.textContent;
+        displayUtils.updateDisplay(dom, values, newContent, true);
+        displayUtils.updateDisplay(dom, values, formatResult(result));
         return;
       }
-      currentOperator = operatorUtils.findOperator(values, (op) => op.id === target);
+      currentOperator = operatorUtils.findOperator(
+        values,
+        (op) => op.id === target
+      );
 
       let num = +dom.display.textContent;
       if (isNaN(num) || !isFinite(num)) num = 0;
 
-      dom.smallDisplay.textContent =
+      let newContent =
         dom.display.textContent === values.defaultDisplay ? 0 : num;
-      dom.smallDisplay.textContent += currentOperator.symbol;
-      dom.display.textContent = values.defaultDisplay;
+      newContent += currentOperator.symbol;
+      displayUtils.updateDisplay(dom, values, newContent, true);
+      displayUtils.updateDisplay(dom, values, values.defaultDisplay);
       lastOperation = "";
-      displayUtils.checkDisplayOverflow(dom, values);
     },
 
     handleEqual(dom, values) {
@@ -150,12 +163,10 @@ export function createCalculatorController() {
             lastOperation.num2,
             values
           );
-
-          dom.smallDisplay.textContent =
+          let newContent =
             lastOperation.num1 + currentOperator.symbol + lastOperation.num2;
-          dom.display.textContent = formatResult(result);
-          displayUtils.checkDisplayOverflow(dom, values);
-
+          displayUtils.updateDisplay(dom, values, newContent, true);
+          displayUtils.updateDisplay(dom, values, formatResult(result));
           return;
         } else {
           let result = operatorUtils.doOperation(
@@ -164,9 +175,11 @@ export function createCalculatorController() {
             +dom.display.textContent,
             values
           );
-          dom.smallDisplay.textContent += dom.display.textContent;
-          dom.display.textContent = formatResult(result);
-          displayUtils.checkDisplayOverflow(dom, values);
+          let newContent =
+            dom.smallDisplay.textContent + dom.display.textContent;
+          displayUtils.updateDisplay(dom, values, newContent, true);
+
+          displayUtils.updateDisplay(dom, values, formatResult(result));
         }
       }
     },
@@ -175,8 +188,11 @@ export function createCalculatorController() {
       if (!dom.display.textContent.includes(".")) {
         displayUtils.updateDisplay(dom, values, dom.display.textContent + ".");
       }
-    }
+    },
   };
 
-  return { handlers, getState: () => ({ currentOperator, lastOperation, lastResult }) };
+  return {
+    handlers,
+    getState: () => ({ currentOperator, lastOperation, lastResult }),
+  };
 }
