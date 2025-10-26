@@ -11,7 +11,6 @@ A modern and responsive calculator built with vanilla JavaScript, HTML, and CSS.
 
 
 </div>
-## ✨ Features
 
 ### 🎯 Core Functionality
 - **Basic operations**: Addition, subtraction, multiplication, and division
@@ -108,7 +107,3 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## 👨‍💻 Author
 
 **Salva** - [GitHub](https://github.com/smad2)
-
----
-
-Made with ❤️ and lots of ☕
